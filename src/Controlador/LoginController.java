@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 public class LoginController {
 
     public Usuario loginRetornaUsuario(String user, String pass) {
-
         if (user.equals("admin") && pass.equals("1234")) {
 
             Usuario u = new Usuario();
@@ -22,16 +21,14 @@ public class LoginController {
 
             return u;
         }
-
         JOptionPane.showMessageDialog(null,
                 "Usuario o contraseña incorrectos");
-
         return null;
     }
 
     public boolean cambiarContrasena(Usuario u, String actual, String nueva) {
 
-        // verificar contraseña actual
+        // verifica la contraseña actual del parametro u de 
         if (!u.password.equals(actual)) {
 
             JOptionPane.showMessageDialog(null,
@@ -40,7 +37,6 @@ public class LoginController {
             return false;
         }
 
-        // cambiar contraseña
         u.password = nueva;
 
         JOptionPane.showMessageDialog(null,

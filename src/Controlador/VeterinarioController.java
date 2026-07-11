@@ -18,9 +18,7 @@ public class VeterinarioController {
         veterinarios = new ListaDoble<>();
     }
 
-    /**
-     * Registra un veterinario cuando su identificador no existe en la lista.
-     */
+    /*Registra un veterinario cuando su id no existe en la lista(evita redundancia de datos)*/
     public boolean registrarVeterinario(Veterinario veterinario) {
         if (veterinario == null
                 || buscarVeterinarioPorId(veterinario.getIdVeterinario()) != null) {
@@ -31,9 +29,7 @@ public class VeterinarioController {
         return true;
     }
 
-    /**
-     * Busca un veterinario por su identificador interno.
-     */
+    /* Busca un veterinario por su id */
     public Veterinario buscarVeterinarioPorId(int idVeterinario) {
         NodoDoble<Veterinario> actual = veterinarios.getPrimero();
         while (actual != null) {
@@ -46,9 +42,7 @@ public class VeterinarioController {
         return null;
     }
 
-    /**
-     * Actualiza los datos editables del veterinario indicado.
-     */
+    /* Actualiza los datos editables del veterinario indicado(boton modificar).*/
     public boolean modificarVeterinario(int idVeterinario, String cmpv,
             String nombre, String especialidad) {
         Veterinario veterinario = buscarVeterinarioPorId(idVeterinario);

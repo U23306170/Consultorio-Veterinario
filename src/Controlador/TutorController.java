@@ -20,11 +20,7 @@ public class TutorController {
         tutores = new ListaDoble<>();
     }
 
-    /**
-     * Registra un tutor si el DNI aun no pertenece a otro tutor.
-     *
-     * @return true cuando el registro se realiza; false si el DNI ya existe.
-     */
+    /* Registra un tutor si el DNI aun no pertenece a otro tutor, el registro vota true cuando el registro se realiza; false si el DNI ya existe.*/
     public boolean registrarTutor(RegistroTutor tutor) {
         if (tutor == null || buscarTutorPorDni(tutor.getDni()) != null) {
             return false;
@@ -34,9 +30,7 @@ public class TutorController {
         return true;
     }
 
-    /**
-     * Busca un tutor recorriendo la lista doble desde el primer nodo.
-     */
+    /* Busca un tutor recorriendo la lista doble desde el primer nodo */
     public RegistroTutor buscarTutorPorDni(String dni) {
         if (dni == null) {
             return null;
@@ -53,9 +47,7 @@ public class TutorController {
         return null;
     }
 
-    /**
-     * Actualiza los datos editables de un tutor ya registrado.
-     */
+    /*se usara en el boton Actualiza los datos editables de un tutor que ya fue registrado*/
     public boolean modificarTutor(String dni, String nombre,
             String apellidoPaterno, String apellidoMaterno, String telefono) {
         RegistroTutor tutor = buscarTutorPorDni(dni);

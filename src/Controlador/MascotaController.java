@@ -18,9 +18,7 @@ public class MascotaController {
         mascotas = new ListaDoble<>();
     }
 
-    /**
-     * Agrega una mascota a la lista doble de mascotas registradas.
-     */
+    /* Agrega una mascota a la lista doble de mascotas registradas */
     public boolean registrarMascota(Mascota mascota) {
         if (mascota == null || buscarMascotaPorId(mascota.getIdMascota()) != null) {
             return false;
@@ -45,9 +43,7 @@ public class MascotaController {
         return null;
     }
 
-    /**
-     * Busca la primera mascota que coincide por nombre y especie.
-     */
+    /* Busca la primera mascota que coincide por nombre y especie.*/
     public Mascota buscarMascota(String nombre, String especie) {
         if (nombre == null || especie == null) {
             return null;
@@ -65,9 +61,7 @@ public class MascotaController {
         return null;
     }
 
-    /**
-     * Modifica los datos de una mascota ya localizada.
-     */
+    /*Modifica los datos de una mascota ya buscada y localizada.*/
     public boolean modificarMascota(Mascota mascota, String nombre,
             String especie, String edad) {
         if (mascota == null) {

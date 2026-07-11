@@ -32,9 +32,7 @@ public class HistorialController {
         return true;
     }
 
-    /**
-     * Busca una atencion clinica por su identificador unico.
-     */
+    /* Busca una atencion clinica por su identificador unico (idHCV)*/
     public HistorialClinicoVeterinario buscarHistorialPorId(int idHistorial) {
         Nodo<HistorialClinicoVeterinario> actual = historiales.getPrimero();
         while (actual != null) {

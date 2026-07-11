@@ -29,9 +29,7 @@ public class CitaController {
         this.historialController = historialController;
     }
 
-    /**
-     * Registra una cita y conserva en su pago el costo vigente del servicio.
-     */
+    /** Registra una cita y conserva en su pago el costo vigente del servicio que se ingresara en el JcomboBox de la vista.*/
     public boolean registrarCita(Cita cita) {
         if (cita == null || cita.getTutor() == null || cita.getMascota() == null
                 || cita.getVeterinario() == null || cita.getServicio() == null
@@ -57,10 +55,7 @@ public class CitaController {
         }
         return null;
     }
-
-    /**
-     * Modifica los datos de una cita que aun no ha sido atendida.
-     */
+    /* Modifica los datos de una cita que aun no ha sido atendida por veterinario en el boton de Citas*/
     public boolean modificarCita(int idCita, Veterinario veterinario,
             Servicio servicio, Pago pago, Date fecha, String hora, String motivo) {
         Cita cita = buscarCitaPorId(idCita);
@@ -79,9 +74,7 @@ public class CitaController {
         return true;
     }
 
-    /**
-     * Coloca una cita registrada al final de la cola de atencion.
-     */
+    /*encolar cooloca una cita registrada al final de la cola de atencion. */
     public boolean encolarCita(int idCita) {
         Cita cita = buscarCitaPorId(idCita);
         if (cita == null || "ATENDIDA".equals(cita.getEstado())
@@ -94,9 +87,7 @@ public class CitaController {
         return true;
     }
 
-    /**
-     * Atiende la primera cita de la cola y registra su historial clinico.
-     */
+    /*atiende la primera cita de la cola y registra su historial clinico.*/
     public boolean atenderSiguienteCita(int idHistorial, String diagnostico,
             String observaciones, Tratamiento tratamiento) {
         if (historialController == null

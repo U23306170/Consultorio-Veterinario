@@ -25,12 +25,12 @@ public class Cola {
         cola.offer(cita);
     }
 
-    // Atiende la primera cita
+    // Atiende la primera cita q se registro
     public Cita desencolar() {
         return cola.poll();
     }
 
-    // Muestra la siguiente cita
+    // Muestra la cola o nodo que se encuentre en la siguiente cita
     public Cita frente() {
         return cola.peek();
     }
