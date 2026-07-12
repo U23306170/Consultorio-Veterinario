@@ -3,9 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package Vista;
-
 import Controlador.TutorController;
-
+import ESTRUCTURAS.NodoDoble;
+import MODELO.RegistroTutor;
+import javax.swing.JOptionPane;
 /**
  *
  * @author User
@@ -53,6 +54,7 @@ public class RegistroTutorVista extends javax.swing.JPanel {
         btnBuscar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnMostrar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
 
         jLabel1.setText("DNI:");
 
@@ -94,11 +96,15 @@ public class RegistroTutorVista extends javax.swing.JPanel {
         jScrollPane1.setViewportView(txtResultado);
 
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
 
         btnMostrar.setText("Mostrar");
         btnMostrar.addActionListener(this::btnMostrarActionPerformed);
+
+        btnModificar.setText("Modificar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -124,7 +130,9 @@ public class RegistroTutorVista extends javax.swing.JPanel {
                             .addComponent(txtDni, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(96, 96, 96)
-                        .addComponent(btnRegistrar)))
+                        .addComponent(btnRegistrar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnModificar)))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
@@ -170,7 +178,9 @@ public class RegistroTutorVista extends javax.swing.JPanel {
                             .addComponent(jLabel5)
                             .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(btnRegistrar)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRegistrar)
+                            .addComponent(btnModificar))
                         .addGap(0, 133, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -179,17 +189,121 @@ public class RegistroTutorVista extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        // TODO add your handling code here:
+        if (!controladorDisponible()) {
+            return;
+        }
+
+        StringBuilder resultado = new StringBuilder("TUTORES REGISTRADOS\n\n");
+        NodoDoble<RegistroTutor> actual = tutorController.getTutores().getPrimero();
+        if (actual == null) {
+            resultado.append("No hay tutores registrados.");
+        }
+        while (actual != null) {
+            resultado.append(describirTutor(actual.getDato())).append("\n\n");
+            actual = actual.getSiguiente();
+        }
+        txtResultado.setText(resultado.toString());
     }//GEN-LAST:event_btnMostrarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+       if (!controladorDisponible() || !camposObligatoriosCompletos()) {
+            return;
+        }
+
+        RegistroTutor tutor = new RegistroTutor(texto(txtDni), texto(txtNombre),
+                texto(txtApellidoMaterno), texto(txtApellidoPaterno),
+                texto(txtTelefono));
+        if (tutorController.registrarTutor(tutor)) {
+            txtResultado.setText("Tutor registrado correctamente.\nDNI: "
+                    + tutor.getDni());
+            limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Ya existe un tutor registrado con ese DNI.",
+                    "Registro no realizado", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+       if (!controladorDisponible() || texto(txtDni).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el DNI del tutor.");
+            return;
+        }
+
+        RegistroTutor tutor = tutorController.buscarTutorPorDni(texto(txtDni));
+        if (tutor == null) {
+            txtResultado.setText("No se encontro un tutor con ese DNI.");
+            return;
+        }
+
+        txtNombre.setText(tutor.getNombre());
+        txtApellidoPaterno.setText(tutor.getApellidoPaterno());
+        txtApellidoMaterno.setText(tutor.getApellidoMaterno());
+        txtTelefono.setText(tutor.getTelefono());
+        txtResultado.setText(describirTutor(tutor));
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if (!controladorDisponible() || texto(txtDni).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el DNI del tutor a eliminar.");
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea eliminar el tutor con DNI " + texto(txtDni) + "?",
+                "Confirmar eliminacion", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION
+                && tutorController.eliminarTutor(texto(txtDni))) {
+            txtResultado.setText("Tutor eliminado correctamente.");
+            limpiarCampos();
+        } else if (opcion == JOptionPane.YES_OPTION) {
+            txtResultado.setText("No se encontro un tutor con ese DNI.");
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+    
+     private String describirTutor(RegistroTutor tutor) {
+        return "DNI: " + tutor.getDni() + "\nNombre: " + tutor.getNombre()
+                + " " + tutor.getApellidoPaterno() + " "
+                + tutor.getApellidoMaterno() + "\nTelefono: " + tutor.getTelefono();
+    }
+
+    private boolean camposObligatoriosCompletos() {
+        if (texto(txtDni).isEmpty() || texto(txtNombre).isEmpty()
+                || texto(txtApellidoPaterno).isEmpty()
+                || texto(txtApellidoMaterno).isEmpty()
+                || texto(txtTelefono).isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Complete todos los campos del tutor.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean controladorDisponible() {
+        if (tutorController == null) {
+            JOptionPane.showMessageDialog(this,
+                    "La vista debe abrirse desde Dashboard.");
+            return false;
+        }
+        return true;
+    }
+
+    private String texto(javax.swing.JTextField campo) {
+        return campo.getText().trim();
+    }
+
+    private void limpiarCampos() {
+        txtDni.setText("");
+        txtNombre.setText("");
+        txtApellidoPaterno.setText("");
+        txtApellidoMaterno.setText("");
+        txtTelefono.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnMostrar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JLabel jLabel1;

@@ -3,20 +3,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package Vista;
+import Controlador.MascotaController;
+import Controlador.TutorController;
+import ESTRUCTURAS.NodoDoble;
+import MODELO.Mascota;
+import MODELO.RegistroTutor;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author User
  */
 public class RegistroMascotaVista extends javax.swing.JPanel {
-
+    
+    private TutorController tutorController;
+    private MascotaController mascotaController;
+    
     /**
      * Creates new form RegistroMascotaVista
      */
     public RegistroMascotaVista() {
         initComponents();
     }
-
+    public RegistroMascotaVista(TutorController tutorController, MascotaController mascotaController) {
+        this();
+        this.tutorController = tutorController;
+        this.mascotaController = mascotaController;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,6 +95,7 @@ public class RegistroMascotaVista extends javax.swing.JPanel {
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
         txtResultado.setColumns(20);
         txtResultado.setRows(5);
@@ -173,21 +187,164 @@ public class RegistroMascotaVista extends javax.swing.JPanel {
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
+        if (!controladoresDisponibles() || texto(txtDniBuscar).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el DNI del tutor.");
+            return;
+        }
+
+        RegistroTutor tutor = tutorController.buscarTutorPorDni(texto(txtDniBuscar));
+        if (tutor == null) {
+            txtResultado.setText("No existe un tutor con ese DNI.");
+            return;
+        }
+
+        StringBuilder resultado = new StringBuilder("TUTOR: ")
+                .append(tutor.getNombre()).append(" ")
+                .append(tutor.getApellidoPaterno()).append("\n\nMASCOTAS:\n");
+        boolean encontroMascotas = false;
+        NodoDoble<Mascota> actual = mascotaController.getMascotas().getPrimero();
+        while (actual != null) {
+            Mascota mascota = actual.getDato();
+            if (mascota.getTutor() != null
+                    && tutor.getDni().equals(mascota.getTutor().getDni())) {
+                resultado.append(describirMascota(mascota)).append("\n\n");
+                encontroMascotas = true;
+            }
+            actual = actual.getSiguiente();
+        }
+        if (!encontroMascotas) {
+            resultado.append("No hay mascotas registradas para este tutor.");
+        }
+        txtResultado.setText(resultado.toString());
+    
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        if (!controladoresDisponibles()) {
+            return;
+        }
+        Mascota mascota = solicitarMascotaDelTutor("Ingrese el ID de la mascota a eliminar:");
+        if (mascota == null) {
+            return;
+        }
+
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea eliminar a " + mascota.getNombre() + "?",
+                "Confirmar eliminacion", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            boolean eliminada = mascotaController.eliminarMascota(mascota.getIdMascota());
+            txtResultado.setText(eliminada ? "Mascota eliminada correctamente."
+                    : "No se pudo eliminar la mascota.");
+            if (eliminada) {
+                limpiarCamposMascota();
+            }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        buscarTutorPorDni(String dni);        
+        //buscarTutorPorDni(String dni);        
+        if (!controladoresDisponibles() || !camposMascotaCompletos()) {
+            return;
+        }
+
+        RegistroTutor tutor = tutorController.buscarTutorPorDni(texto(txtDniBuscar));
+        if (tutor == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Primero debe registrar o ingresar un tutor existente con ese DNI.");
+            return;
+        }
+
+        Mascota mascota = mascotaController.registrarMascota(tutor,
+                texto(txtNombre), texto(txtEspecie), texto(txtEdad));
+        if (mascota == null) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo registrar la mascota. Revise los datos.");
+            return;
+        }
+        txtResultado.setText("Mascota registrada correctamente.\n"
+                + describirMascota(mascota));
+        limpiarCamposMascota();
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void txtEdadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEdadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEdadActionPerformed
 
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        if (!controladoresDisponibles() || !camposMascotaCompletos()) {
+            return;
+        }
+
+        Mascota mascota = solicitarMascotaDelTutor("Ingrese el ID de la mascota a modificar:");
+        if (mascota == null) {
+            return;
+        }
+        boolean modificada = mascotaController.modificarMascota(mascota,
+                texto(txtNombre), texto(txtEspecie), texto(txtEdad));
+        txtResultado.setText(modificada ? "Mascota modificada correctamente.\n"
+                + describirMascota(mascota) : "No se pudo modificar la mascota.");
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private Mascota solicitarMascotaDelTutor(String mensaje) {
+        if (texto(txtDniBuscar).isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Ingrese primero el DNI del tutor.");
+            return null;
+        }
+        String idIngresado = JOptionPane.showInputDialog(this, mensaje);
+        if (idIngresado == null || idIngresado.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            Mascota mascota = mascotaController.buscarMascotaPorId(
+                    Integer.parseInt(idIngresado.trim()));
+            if (mascota == null || mascota.getTutor() == null
+                    || !texto(txtDniBuscar).equals(mascota.getTutor().getDni())) {
+                JOptionPane.showMessageDialog(this,
+                        "La mascota no existe o no pertenece al tutor indicado.");
+                return null;
+            }
+            return mascota;
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "El ID debe ser numerico.");
+            return null;
+        }
+    }
+
+    private String describirMascota(Mascota mascota) {
+        return "ID: " + mascota.getIdMascota() + "\nNombre: "
+                + mascota.getNombre() + "\nEspecie: " + mascota.getEspecie()
+                + "\nEdad: " + mascota.getEdad();
+    }
+
+    private boolean camposMascotaCompletos() {
+        if (texto(txtDniBuscar).isEmpty() || texto(txtNombre).isEmpty()
+                || texto(txtEspecie).isEmpty() || texto(txtEdad).isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Complete DNI del tutor, nombre, especie y edad.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean controladoresDisponibles() {
+        if (tutorController == null || mascotaController == null) {
+            JOptionPane.showMessageDialog(this,
+                    "La vista debe abrirse desde Dashboard.");
+            return false;
+        }
+        return true;
+    }
+
+    private String texto(javax.swing.JTextField campo) {
+        return campo.getText().trim();
+    }
+
+    private void limpiarCamposMascota() {
+        txtNombre.setText("");
+        txtEspecie.setText("");
+        txtEdad.setText("");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;

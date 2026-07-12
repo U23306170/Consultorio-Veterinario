@@ -4,17 +4,62 @@
  */
 package Vista;
 
+import Controlador.VeterinarioController;
+import ESTRUCTURAS.NodoDoble;
+import MODELO.Veterinario;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
  */
 public class RegistroVeterinarioVista extends javax.swing.JPanel {
 
+    private VeterinarioController veterinarioController;
+
     /**
      * Creates new form RegistroVeterinarioVista
      */
     public RegistroVeterinarioVista() {
         initComponents();
+    }
+
+    public RegistroVeterinarioVista(VeterinarioController veterinarioController) {
+        this();
+        this.veterinarioController = veterinarioController;
+    }
+
+    private String describirVeterinario(Veterinario veterinario) {
+        return "ID: " + veterinario.getIdVeterinario() + "\nCMPV: "
+                + veterinario.getCmpv() + "\nNombre: " + veterinario.getNombre()
+                + "\nEspecialidad: " + veterinario.getEspecialidad();
+    }
+
+    private boolean camposObligatoriosCompletos() {
+        if (texto(txtCmpv).isEmpty() || texto(txtNombre).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "no llenaste los campos solicitasdos.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean controladorDisponible() {
+        if (veterinarioController == null) {
+            JOptionPane.showMessageDialog(this,
+                    "La vista debe abrirse desde Dashboard.");
+            return false;
+        }
+        return true;
+    }
+
+    private String texto(javax.swing.JTextField campo) {
+        return campo.getText().trim();
+    }
+
+    private void limpiarCampos() {
+        txtCmpv.setText("");
+        txtNombre.setText("");
+        cboEspecialidad.setSelectedIndex(0);
     }
 
     /**
@@ -36,10 +81,11 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
         cboEspecialidad = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtResultado = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnRegistrar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnModificar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnMostrar = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 204));
 
@@ -77,13 +123,19 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
         txtResultado.setRows(5);
         jScrollPane1.setViewportView(txtResultado);
 
-        jButton1.setText("Registrar");
+        btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(this::btnRegistrarActionPerformed);
 
-        jButton2.setText("Eliminar");
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
 
-        jButton3.setText("Modificar");
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
-        jButton4.setText("Buscar");
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
+
+        btnMostrar.setText("Mostrar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -94,14 +146,7 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(79, 79, 79)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4))
+                        .addComponent(btnRegistrar))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -116,7 +161,17 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtCmpv, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtCmpv, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnEliminar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnMostrar)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnModificar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBuscar)))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1)
                 .addContainerGap())
@@ -144,13 +199,15 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
                             .addComponent(jLabel4)
                             .addComponent(cboEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
+                        .addComponent(btnRegistrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4))
-                        .addContainerGap(190, Short.MAX_VALUE))))
+                            .addComponent(btnEliminar)
+                            .addComponent(btnModificar)
+                            .addComponent(btnBuscar))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnMostrar)
+                        .addContainerGap(155, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -158,13 +215,98 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cboEspecialidadActionPerformed
 
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        if (!controladorDisponible() || !camposObligatoriosCompletos()) {
+            return;
+        }
+
+        Veterinario veterinario = veterinarioController.registrarVeterinario(
+                texto(txtCmpv), texto(txtNombre), cboEspecialidad.getSelectedItem().toString());
+        if (veterinario == null) {
+            JOptionPane.showMessageDialog(this,
+                    "El CMPV ya esta registrado o los datos son invalidos.");
+            return;
+        }
+        txtResultado.setText("Veterinario registrado correctamente.\n"
+                + describirVeterinario(veterinario));
+        limpiarCampos();
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        if (!controladorDisponible() || texto(txtCmpv).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el CMPV a eliminar.");
+            return;
+        }
+
+        Veterinario veterinario = veterinarioController.buscarVeterinarioPorCmpv(texto(txtCmpv));
+        if (veterinario == null) {
+            txtResultado.setText("No se encontro un veterinario con ese CMPV.");
+            return;
+        }
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea eliminar a " + veterinario.getNombre() + "?",
+                "Confirmar eliminacion", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            boolean eliminado = veterinarioController.eliminarVeterinario(
+                    veterinario.getIdVeterinario());
+            txtResultado.setText(eliminado ? "Veterinario eliminado correctamente."
+                    : "No se pudo eliminar el veterinario.");
+            if (eliminado) {
+                limpiarCampos();
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        if (!controladorDisponible() || !camposObligatoriosCompletos()) {
+            return;
+        }
+
+        Veterinario veterinario = veterinarioController.buscarVeterinarioPorCmpv(texto(txtCmpv));
+        if (veterinario == null) {
+            txtResultado.setText("Busque primero un veterinario registrado por CMPV.");
+            return;
+        }
+        boolean modificado = veterinarioController.modificarVeterinario(
+                veterinario.getIdVeterinario(), texto(txtCmpv), texto(txtNombre),
+                cboEspecialidad.getSelectedItem().toString());
+        txtResultado.setText(modificado ? "Veterinario modificado correctamente."
+                : "No se pudo modificar el veterinario.");
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        if (!controladorDisponible() || texto(txtCmpv).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el CMPV a eliminar.");
+            return;
+        }
+
+        Veterinario veterinario = veterinarioController.buscarVeterinarioPorCmpv(texto(txtCmpv));
+        if (veterinario == null) {
+            txtResultado.setText("No se encontro un veterinario con ese CMPV.");
+            return;
+        }
+        int opcion = JOptionPane.showConfirmDialog(this,
+                "¿Desea eliminar a " + veterinario.getNombre() + "?",
+                "Confirmar eliminacion", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            boolean eliminado = veterinarioController.eliminarVeterinario(
+                    veterinario.getIdVeterinario());
+            txtResultado.setText(eliminado ? "Veterinario eliminado correctamente."
+                    : "No se pudo eliminar el veterinario.");
+            if (eliminado) {
+                limpiarCampos();
+            }
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnMostrar;
+    private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cboEspecialidad;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

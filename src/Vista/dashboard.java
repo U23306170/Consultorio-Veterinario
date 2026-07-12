@@ -44,7 +44,7 @@ public class dashboard extends javax.swing.JFrame {
         citaController = new CitaController(historialController);
 
         // Vista inicial.
-        mostrarPanel(new PanelInicio());
+        mostrarPanel(new AtencionVista());
     }
 
     // Cargar la vista de inicio por defecto al abrir la aplicación        
@@ -68,11 +68,11 @@ public class dashboard extends javax.swing.JFrame {
         panelTitulo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         panelMenu = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnRegistroTutor = new javax.swing.JButton();
+        btnRegistroMascota = new javax.swing.JButton();
+        btnRegistroVeterinario = new javax.swing.JButton();
+        btnRegistroCitas = new javax.swing.JButton();
+        btnHistoriaVeterinaria = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -110,19 +110,21 @@ public class dashboard extends javax.swing.JFrame {
         panelMenu.setBackground(new java.awt.Color(0, 51, 255));
         panelMenu.setPreferredSize(new java.awt.Dimension(170, 535));
 
-        jButton1.setText("REGISTRO TUTOR");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        btnRegistroTutor.setText("REGISTRO TUTOR");
+        btnRegistroTutor.addActionListener(this::btnRegistroTutorActionPerformed);
 
-        jButton2.setText("REGISTRO MASCOTA");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        btnRegistroMascota.setText("REGISTRO MASCOTA");
+        btnRegistroMascota.addActionListener(this::btnRegistroMascotaActionPerformed);
 
-        jButton3.setText("REGISTRO VETERINARIO");
+        btnRegistroVeterinario.setText("REGISTRO VETERINARIO");
+        btnRegistroVeterinario.addActionListener(this::btnRegistroVeterinarioActionPerformed);
 
-        jButton4.setText("REGISTRO DE CITAS");
-        jButton4.setPreferredSize(new java.awt.Dimension(156, 23));
+        btnRegistroCitas.setText("REGISTRO DE CITAS");
+        btnRegistroCitas.setPreferredSize(new java.awt.Dimension(156, 23));
+        btnRegistroCitas.addActionListener(this::btnRegistroCitasActionPerformed);
 
-        jButton5.setText("HISTORIA VETERINARIA");
-        jButton5.addActionListener(this::jButton5ActionPerformed);
+        btnHistoriaVeterinaria.setText("HISTORIA VETERINARIA");
+        btnHistoriaVeterinaria.addActionListener(this::btnHistoriaVeterinariaActionPerformed);
 
         javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
         panelMenu.setLayout(panelMenuLayout);
@@ -131,14 +133,14 @@ public class dashboard extends javax.swing.JFrame {
             .addGroup(panelMenuLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRegistroTutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelMenuLayout.createSequentialGroup()
                         .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnRegistroVeterinario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnRegistroMascota, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnRegistroCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnHistoriaVeterinaria, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -146,15 +148,15 @@ public class dashboard extends javax.swing.JFrame {
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelMenuLayout.createSequentialGroup()
                 .addGap(62, 62, 62)
-                .addComponent(jButton1)
+                .addComponent(btnRegistroTutor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addComponent(btnRegistroMascota)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(btnRegistroVeterinario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnRegistroCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton5)
+                .addComponent(btnHistoriaVeterinaria)
                 .addContainerGap(373, Short.MAX_VALUE))
         );
 
@@ -163,17 +165,25 @@ public class dashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    mostrarPanel(new RegistroTutorVista(tutorController));
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnRegistroTutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroTutorActionPerformed
+        mostrarPanel(new RegistroTutorVista(tutorController));
+    }//GEN-LAST:event_btnRegistroTutorActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnRegistroMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroMascotaActionPerformed
+        mostrarPanel(new RegistroMascotaVista(tutorController, mascotaController));
+    }//GEN-LAST:event_btnRegistroMascotaActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnHistoriaVeterinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoriaVeterinariaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnHistoriaVeterinariaActionPerformed
+
+    private void btnRegistroVeterinarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroVeterinarioActionPerformed
+        mostrarPanel(new RegistroVeterinarioVista(veterinarioController));
+    }//GEN-LAST:event_btnRegistroVeterinarioActionPerformed
+
+    private void btnRegistroCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroCitasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRegistroCitasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,11 +211,11 @@ public class dashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton btnHistoriaVeterinaria;
+    private javax.swing.JButton btnRegistroCitas;
+    private javax.swing.JButton btnRegistroMascota;
+    private javax.swing.JButton btnRegistroTutor;
+    private javax.swing.JButton btnRegistroVeterinario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel panelMenu;
     private javax.swing.JPanel panelPrincipal;

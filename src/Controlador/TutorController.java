@@ -61,7 +61,13 @@ public class TutorController {
         tutor.setTelefono(telefono);
         return true;
     }
-
+    
+    /*Elimina un tutor identificado por su DNI.*/
+    public boolean eliminarTutor(String dni) {
+        RegistroTutor tutor = buscarTutorPorDni(dni);
+        return tutor != null && tutores.eliminar(tutor);
+    }
+    
     public ListaDoble<RegistroTutor> getTutores() {
         return tutores;
     }

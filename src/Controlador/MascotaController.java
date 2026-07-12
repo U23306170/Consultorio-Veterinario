@@ -3,9 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Controlador;
+
 import ESTRUCTURAS.ListaDoble;
 import ESTRUCTURAS.NodoDoble;
 import MODELO.Mascota;
+import MODELO.RegistroTutor;
+
 /**
  *
  * @author User
@@ -13,9 +16,11 @@ import MODELO.Mascota;
 public class MascotaController {
 
     private final ListaDoble<Mascota> mascotas;
+    private int proximoIdMascota;
 
     public MascotaController() {
         mascotas = new ListaDoble<>();
+        proximoIdMascota = 1;
     }
 
     /* Agrega una mascota a la lista doble de mascotas registradas */
@@ -29,8 +34,29 @@ public class MascotaController {
     }
 
     /**
-     * Busca una mascota mediante su identificador unico.
+     * Crea y registra una mascota con un identificador generado por el sistema.
      */
+    public Mascota registrarMascota(RegistroTutor tutor, String nombre,
+            String especie, String edad) {
+        if (tutor == null || esTextoVacio(nombre) || esTextoVacio(especie)
+                || esTextoVacio(edad)) {
+            return null;
+        }
+
+        while (buscarMascotaPorId(proximoIdMascota) != null) {
+            proximoIdMascota++;
+        }
+
+        Mascota mascota = new Mascota(proximoIdMascota, tutor, nombre.trim(),
+                especie.trim(), edad.trim());
+        if (registrarMascota(mascota)) {
+            proximoIdMascota++;
+            return mascota;
+        }
+        return null;
+    }
+
+    /* Busca una mascota mediante su identificador unico.*/
     public Mascota buscarMascotaPorId(int idMascota) {
         NodoDoble<Mascota> actual = mascotas.getPrimero();
         while (actual != null) {
@@ -76,5 +102,14 @@ public class MascotaController {
 
     public ListaDoble<Mascota> getMascotas() {
         return mascotas;
+    }
+    /* Elimina una mascota identificada por su codigo unico.*/
+    public boolean eliminarMascota(int idMascota) {
+        Mascota mascota = buscarMascotaPorId(idMascota);
+        return mascota != null && mascotas.eliminar(mascota);
+    }
+
+    private boolean esTextoVacio(String texto) {
+        return texto == null || texto.trim().isEmpty();
     }
 }
