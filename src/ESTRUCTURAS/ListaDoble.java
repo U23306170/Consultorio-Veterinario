@@ -16,7 +16,6 @@ public class ListaDoble<T> {
     private NodoDoble<T> ultimo;
 
     public ListaDoble() {
-
         primero = null;
         ultimo = null;
 

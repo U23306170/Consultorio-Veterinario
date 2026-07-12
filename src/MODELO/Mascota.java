@@ -10,12 +10,15 @@ package MODELO;
  */
 public class Mascota {
     private final int idMascota;
+    private RegistroTutor tutor;
     private String nombre;
     private String especie;
     private String edad;
 
-    public Mascota(int idMascota, String nombre, String especie, String edad) {
+    public Mascota(int idMascota, RegistroTutor tutor, String nombre,
+            String especie, String edad) {
         this.idMascota = idMascota;
+        this.tutor = tutor;
         this.nombre = nombre;
         this.especie = especie;
         this.edad = edad;
@@ -23,6 +26,14 @@ public class Mascota {
 
     public int getIdMascota() {
         return idMascota;
+    }
+
+    public RegistroTutor getTutor() {
+        return tutor;
+    }
+
+    public void setTutor(RegistroTutor tutor) {
+        this.tutor = tutor;
     }
 
     public String getNombre() {
