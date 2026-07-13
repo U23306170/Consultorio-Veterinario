@@ -9,7 +9,6 @@ package ESTRUCTURAS;
  * @author User
  * @param <T>
  */
-
 public class ListaDoble<T> {
 
     private NodoDoble<T> primero;
@@ -43,7 +42,7 @@ public class ListaDoble<T> {
         }
 
     }
-    
+
     /**
      * Elimina la primera coincidencia del dato indicado y conserva los enlaces
      * anterior y siguiente de la lista doble.
@@ -80,6 +79,16 @@ public class ListaDoble<T> {
 
     public NodoDoble<T> getUltimo() {
         return ultimo;
+    }
+
+    public int tamano() {
+        int contador = 0;
+        NodoDoble<T> aux = primero;
+        while (aux != null) {
+            contador++;
+            aux = aux.getSiguiente();
+        }
+        return contador;
     }
 
 }

@@ -136,6 +136,7 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnMostrar.setText("Mostrar");
+        btnMostrar.addActionListener(this::btnMostrarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -198,7 +199,7 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(cboEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(76, 76, 76)
                         .addComponent(btnRegistrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -207,7 +208,7 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
                             .addComponent(btnBuscar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnMostrar)
-                        .addContainerGap(155, Short.MAX_VALUE))))
+                        .addContainerGap(91, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -276,7 +277,7 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         if (!controladorDisponible() || texto(txtCmpv).isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el CMPV a eliminar.");
+            JOptionPane.showMessageDialog(this, "Ingrese el CMPV a buscar.");
             return;
         }
 
@@ -285,19 +286,14 @@ public class RegistroVeterinarioVista extends javax.swing.JPanel {
             txtResultado.setText("No se encontro un veterinario con ese CMPV.");
             return;
         }
-        int opcion = JOptionPane.showConfirmDialog(this,
-                "¿Desea eliminar a " + veterinario.getNombre() + "?",
-                "Confirmar eliminacion", JOptionPane.YES_NO_OPTION);
-        if (opcion == JOptionPane.YES_OPTION) {
-            boolean eliminado = veterinarioController.eliminarVeterinario(
-                    veterinario.getIdVeterinario());
-            txtResultado.setText(eliminado ? "Veterinario eliminado correctamente."
-                    : "No se pudo eliminar el veterinario.");
-            if (eliminado) {
-                limpiarCampos();
-            }
-        }
+        txtNombre.setText(veterinario.getNombre());
+        cboEspecialidad.setSelectedItem(veterinario.getEspecialidad());
+        txtResultado.setText(describirVeterinario(veterinario));
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
+        txtResultado.setText(veterinarioController.listarVeterinarios());
+    }//GEN-LAST:event_btnMostrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

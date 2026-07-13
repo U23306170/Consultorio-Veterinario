@@ -25,6 +25,9 @@ public class VeterinarioController {
     /*Registra un veterinario cuando su id no existe en la lista(evita redundancia de datos)*/
     /**
      * Registra un veterinario cuando su identificador no existe en la lista.
+     *
+     * @param veterinario
+     * @return
      */
     public boolean registrarVeterinario(Veterinario veterinario) {
         if (veterinario == null
@@ -40,8 +43,7 @@ public class VeterinarioController {
     /**
      * Crea y registra un veterinario con identificador interno automatico.
      */
-    public Veterinario registrarVeterinario(String cmpv, String nombre,
-            String especialidad) {
+    public Veterinario registrarVeterinario(String cmpv, String nombre, String especialidad) {
         if (esTextoVacio(cmpv) || esTextoVacio(nombre)
                 || esTextoVacio(especialidad)
                 || buscarVeterinarioPorCmpv(cmpv) != null) {
@@ -74,9 +76,7 @@ public class VeterinarioController {
         return null;
     }
 
-    /**
-     * Busca un veterinario por su codigo profesional CMPV.
-     */
+    /* Busca un veterinario por su codigo profesional CMPV.*/
     public Veterinario buscarVeterinarioPorCmpv(String cmpv) {
         if (esTextoVacio(cmpv)) {
             return null;
@@ -118,5 +118,47 @@ public class VeterinarioController {
 
     private boolean esTextoVacio(String texto) {
         return texto == null || texto.trim().isEmpty();
+    }
+
+    public String[] obtenerNombresVeterinarios() {
+
+        int cantidad = veterinarios.tamano();//que hace el metodo tamaño?
+        String[] nombres = new String[cantidad];
+
+        NodoDoble<Veterinario> aux = veterinarios.getPrimero();
+
+        int i = 0;
+
+        while (aux != null) {
+
+            nombres[i] = aux.getDato().getNombre();
+
+            aux = aux.getSiguiente();
+            i++;
+        }
+
+        return nombres;
+    }
+
+    public String listarVeterinarios() {
+
+        StringBuilder sb = new StringBuilder();
+
+        NodoDoble<Veterinario> actual = veterinarios.getPrimero();
+
+        while (actual != null) {
+
+            Veterinario v = actual.getDato();
+
+            sb.append("ID: ").append(v.getIdVeterinario())
+                    .append("\nCMPV: ").append(v.getCmpv())
+                    .append("\nNombre: ").append(v.getNombre())
+                    .append("\nEspecialidad: ").append(v.getEspecialidad())
+                    .append("\n----------------------\n");
+
+            actual = actual.getSiguiente();
+        }
+
+        return sb.toString();
     }
 }
