@@ -12,6 +12,11 @@ import javax.swing.JOptionPane;
  * @author User
  */
 public class LoginController {
+    private Usuario user = new Usuario(1, "admin", "1234", "admin@gmail.com");
+    public LoginController() {
+        
+    }
+    
 
     public Usuario loginRetornaUsuario(String user, String pass) {
         if (user.equals("admin") && pass.equals("1234")) {

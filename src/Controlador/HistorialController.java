@@ -48,5 +48,25 @@ public class HistorialController {
     public ListaSimple<HistorialClinicoVeterinario> getHistoriales() {
         return historiales;
     }
+
+    public int siguienteIdHistorial() {
+        int mayorId = 0;
+        Nodo<HistorialClinicoVeterinario> actual = historiales.getPrimero();
+        while (actual != null) {
+            mayorId = Math.max(mayorId, actual.getDato().getIdHistorial());
+            actual = actual.getSiguiente();
+        }
+        return mayorId + 1;
+    }
+
+    public HistorialClinicoVeterinario obtenerHistorialReciente() {
+        Nodo<HistorialClinicoVeterinario> actual = historiales.getPrimero();
+        HistorialClinicoVeterinario reciente = null;
+        while (actual != null) {
+            reciente = actual.getDato();
+            actual = actual.getSiguiente();
+        }
+        return reciente;
+    }
 }
 

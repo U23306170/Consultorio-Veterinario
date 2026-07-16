@@ -4,17 +4,34 @@
  */
 package Vista;
 
+import Controlador.HistorialController;
+import Controlador.MascotaController;
+import ESTRUCTURAS.Nodo;
+import MODELO.HistorialClinicoVeterinario;
+import MODELO.Mascota;
+import MODELO.Tratamiento;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
  */
 public class HistoriaVista extends javax.swing.JPanel {
 
+    private HistorialController historialController;
+    private MascotaController mascotaController;
+
     /**
      * Creates new form HistoriaVista
      */
     public HistoriaVista() {
         initComponents();
+    }
+
+    public HistoriaVista(HistorialController historialController, MascotaController mascotaController) {
+        this();
+        this.historialController = historialController;
+        this.mascotaController = mascotaController;
     }
 
     /**
@@ -65,10 +82,13 @@ public class HistoriaVista extends javax.swing.JPanel {
         jLabel2.setText("ID de la mascota:");
 
         btnObtenerHistorialMascota.setText("Obtener Historial");
+        btnObtenerHistorialMascota.addActionListener(this::btnObtenerHistorialMascotaActionPerformed);
 
         btnMostrarTodos.setText("Mostrar Todo los Historiales");
+        btnMostrarTodos.addActionListener(this::btnMostrarTodosActionPerformed);
 
         jButton1.setText("Historial reciente");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,6 +138,59 @@ public class HistoriaVista extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnObtenerHistorialMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerHistorialMascotaActionPerformed
+        try {
+            int id = Integer.parseInt(txtIdMascota.getText().trim());
+            Mascota mascota = mascotaController.buscarMascotaPorId(id);
+            if (mascota == null) {
+                txtResultado.setText("No existe una mascota con ese ID.");
+                return;
+            }
+            StringBuilder salida = new StringBuilder("MASCOTA: ").append(mascota.getNombre()).append("\n\n");
+            boolean encontro = false;
+            Nodo<HistorialClinicoVeterinario> actual = historialController.getHistoriales().getPrimero();
+            while (actual != null) {
+                HistorialClinicoVeterinario h = actual.getDato();
+                if (h.getMascota().getIdMascota() == id) {
+                    salida.append(describir(h)).append("\n----------------\n");
+                    encontro = true;
+                }
+                actual = actual.getSiguiente();
+            }
+            if (!encontro) {
+                salida.append("No tiene atenciones registradas.");
+            }
+            txtResultado.setText(salida.toString());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Ingrese un ID de mascota valido.");
+        }
+
+    }//GEN-LAST:event_btnObtenerHistorialMascotaActionPerformed
+
+    private void btnMostrarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarTodosActionPerformed
+        StringBuilder salida = new StringBuilder("TODOS LOS HISTORIALES\n\n");
+        Nodo<HistorialClinicoVeterinario> actual = historialController.getHistoriales().getPrimero();
+        if (actual == null) {
+            salida.append("No hay historiales registrados.");
+        }
+        while (actual != null) {
+            salida.append(describir(actual.getDato())).append("\n----------------\n");
+            actual = actual.getSiguiente();
+        }
+        txtResultado.setText(salida.toString());
+
+    }//GEN-LAST:event_btnMostrarTodosActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        HistorialClinicoVeterinario reciente = historialController.obtenerHistorialReciente();
+        txtResultado.setText(reciente == null ? "No hay historiales registrados." : "HISTORIAL RECIENTE\n\n" + describir(reciente));
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private String describir(HistorialClinicoVeterinario h) {
+        Tratamiento t = h.getTratamiento();
+        return "Fecha: " + h.getFecha() + "\nMascota: " + h.getMascota().getNombre() + "\nVeterinario: " + h.getVeterinario().getNombre() + "\nDiagnostico: " + h.getDiagnostico() + "\nObservaciones: " + h.getObservaciones() + "\nTratamiento: " + (t == null ? "Ninguno" : t.getMedicamento() + " - " + t.getFrecuencia());
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMostrarTodos;

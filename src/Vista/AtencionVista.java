@@ -4,7 +4,12 @@
  */
 package Vista;
 
-import Controlador.VeterinarioController;
+import Controlador.CitaController;
+import MODELO.Cita;
+import MODELO.Tratamiento;
+import MODELO.Veterinario;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,7 +17,7 @@ import Controlador.VeterinarioController;
  */
 public class AtencionVista extends javax.swing.JPanel {
 
-    private VeterinarioController controladorVeterinario;
+    private CitaController citaController;//crear un private CitaController 
 
     /**
      * Creates new form AtencionVista
@@ -21,14 +26,14 @@ public class AtencionVista extends javax.swing.JPanel {
         initComponents();
     }
 
-    public AtencionVista(VeterinarioController controladorVeterinario) {
-
-        this(); // Llama al constructor anterior
-        this.controladorVeterinario = controladorVeterinario;
-        cargarVeterinarios();
+    public AtencionVista(CitaController citaController) {
+        this();
+        this.citaController = citaController;
+        cboVeterinario.setEnabled(false);
+        habilitarTratamiento(false);
     }
 
-    private void cargarVeterinarios() {
+    /*private void cargarVeterinarios() {
 
         cboVeterinario.removeAllItems();
 
@@ -37,8 +42,7 @@ public class AtencionVista extends javax.swing.JPanel {
         for (String nombre : nombres) {
             cboVeterinario.addItem(nombre);
         }
-    }
-
+    }*/
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -54,7 +58,7 @@ public class AtencionVista extends javax.swing.JPanel {
         checkboxTratamiento = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtResultado = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        btnBuscarCita = new javax.swing.JButton();
         txtDniTutor = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -111,8 +115,8 @@ public class AtencionVista extends javax.swing.JPanel {
         txtResultado.setRows(5);
         jScrollPane1.setViewportView(txtResultado);
 
-        jButton1.setText("Buscar Cita");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        btnBuscarCita.setText("Buscar Cita");
+        btnBuscarCita.addActionListener(this::btnBuscarCitaActionPerformed);
 
         jLabel3.setText("DNI del tutor:");
 
@@ -143,97 +147,108 @@ public class AtencionVista extends javax.swing.JPanel {
         jLabel11.setText("Indicaciones:");
 
         btnGuardarAtencion.setText("Guardar Atencion");
+        btnGuardarAtencion.addActionListener(this::btnGuardarAtencionActionPerformed);
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
 
         btnAtenderSiguiente.setText("Atender Siguiente");
+        btnAtenderSiguiente.addActionListener(this::btnAtenderSiguienteActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtIndicaciones))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtIndicaciones))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(checkboxTratamiento)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cboVeterinario, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtDniTutor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton1)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addGap(3, 3, 3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFrecuencia)
+                            .addComponent(txtDuracion)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtMedicamento))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel10))
-                                .addGap(3, 3, 3)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtDuracion)
-                                    .addComponent(txtFrecuencia))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(checkboxTratamiento)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnGuardarAtencion))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboVeterinario, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtDniTutor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnBuscarCita))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(8, 8, 8)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnGuardarAtencion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnLimpiar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAtenderSiguiente)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(39, 39, 39)
+                        .addComponent(btnAtenderSiguiente)))
+                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
+                            .addComponent(btnBuscarCita)
                             .addComponent(txtDniTutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(cboVeterinario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cboVeterinario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnLimpiar)
+                            .addComponent(btnAtenderSiguiente))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(checkboxTratamiento)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(checkboxTratamiento)
+                            .addComponent(btnGuardarAtencion))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
@@ -249,19 +264,9 @@ public class AtencionVista extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(txtIndicaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel7)
-                        .addGap(1, 1, 1)
-                        .addComponent(jScrollPane1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardarAtencion)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnAtenderSiguiente))
-                .addContainerGap())
+                            .addComponent(txtIndicaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -269,22 +274,132 @@ public class AtencionVista extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cboVeterinarioActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnBuscarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarCitaActionPerformed
+        if (citaController == null) {
+            return;
+        }
+        Cita cita = citaController.buscarCitaPorDniTutor(txtDniTutor.getText().trim());
+        txtResultado.setText(cita == null ? "No se encontro una cita para ese tutor."
+                : "Cita ID: " + cita.getIdCita() + "\nEstado: " + cita.getEstado()
+                + "\nMascota: " + cita.getMascota().getNombre());
+    }//GEN-LAST:event_btnBuscarCitaActionPerformed
 
     private void checkboxTratamientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxTratamientoActionPerformed
-        // TODO add your handling code here:
+        habilitarTratamiento(checkboxTratamiento.isSelected());
     }//GEN-LAST:event_checkboxTratamientoActionPerformed
+
+    private void btnGuardarAtencionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAtencionActionPerformed
+        if (citaController == null || citaController.obtenerSiguienteCita() == null) {
+            JOptionPane.showMessageDialog(this, "Primero cargue la siguiente cita.");
+            return;
+        }
+        if (txtDiagnostico.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese el diagnostico.");
+            return;
+        }
+        Tratamiento tratamiento = null;
+        if (checkboxTratamiento.isSelected()) try {
+            tratamiento = new Tratamiento(0, txtMedicamento.getText().trim(), Integer.parseInt(txtDuracion.getText().trim()), txtFrecuencia.getText().trim(), txtIndicaciones.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Duracion invalida.");
+            return;
+        }
+        boolean ok = citaController.atenderSiguienteCita(txtDiagnostico.getText().trim(), txtObservaciones.getText().trim(), tratamiento);
+        txtResultado.setText(ok ? "Atencion guardada e historial clinico generado." : "No se pudo guardar la atencion.");
+        if (ok) {
+            limpiar();
+        }
+
+    }//GEN-LAST:event_btnGuardarAtencionActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        limpiar();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnAtenderSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtenderSiguienteActionPerformed
+        /*if (citaController == null) {
+            return;
+        }
+        Cita cita = citaController.obtenerSiguienteCita();
+        if (cita == null) {
+            txtResultado.setText("No hay citas en cola.");
+            return;
+        }
+        txtDniTutor.setText(cita.getTutor().getDni());
+        DefaultComboBoxModel<Veterinario> modelo = new DefaultComboBoxModel<>();
+        modelo.addElement(cita.getVeterinario());
+        cboVeterinario.setModel(modelo);
+        cboVeterinario.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> l, Object v, int i, boolean s, boolean f) {
+                super.getListCellRendererComponent(l, ((Veterinario) v).getNombre() + " (" + ((Veterinario) v).getCmpv() + ")", i, s, f);
+                return this;
+            }
+        });
+        txtResultado.setText("Atendiendo cita ID: " + cita.getIdCita() + "\nMascota: " + cita.getMascota().getNombre() + "\nMotivo: " + cita.getMotivo());*/
+        if (citaController == null) {
+            return;
+        }
+        Cita cita = citaController.obtenerSiguienteCita();
+        if (cita == null) {
+            txtResultado.setText("No hay citas en cola.");
+            return;
+        }
+        txtDniTutor.setText(cita.getTutor().getDni());
+
+        DefaultComboBoxModel<Veterinario> modelo = new DefaultComboBoxModel<>();
+        modelo.addElement(cita.getVeterinario());
+        cboVeterinario.setModel(modelo);
+
+        // RENDERIZADOR BLINDADO CONTRA NULOS
+        cboVeterinario.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> l, Object v, int i, boolean s, boolean f) {
+                // Validamos si el valor recibido es nulo
+                if (v == null) {
+                    super.getListCellRendererComponent(l, "Sin asignar", i, s, f);
+                } else {
+                    Veterinario vet = (Veterinario) v;
+                    String texto = vet.getNombre() + " (" + vet.getCmpv() + ")";
+                    super.getListCellRendererComponent(l, texto, i, s, f);
+                }
+                return this;
+            }
+        });
+
+        txtResultado.setText("Atendiendo cita ID: " + cita.getIdCita()
+                + "\nMascota: " + cita.getMascota().getNombre()
+                + "\nMotivo: " + cita.getMotivo());
+
+    }//GEN-LAST:event_btnAtenderSiguienteActionPerformed
+
+    private void habilitarTratamiento(boolean activo) {
+        txtMedicamento.setEnabled(activo);
+        txtDuracion.setEnabled(activo);
+        txtFrecuencia.setEnabled(activo);
+        txtIndicaciones.setEnabled(activo);
+    }
+
+    private void limpiar() {
+        txtDniTutor.setText("");
+        txtDiagnostico.setText("");
+        txtObservaciones.setText("");
+        txtMedicamento.setText("");
+        txtDuracion.setText("");
+        txtFrecuencia.setText("");
+        txtIndicaciones.setText("");
+        checkboxTratamiento.setSelected(false);
+        habilitarTratamiento(false);
+        cboVeterinario.setModel(new DefaultComboBoxModel<>());
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtenderSiguiente;
+    private javax.swing.JButton btnBuscarCita;
     private javax.swing.JButton btnGuardarAtencion;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JComboBox<String> cboVeterinario;
+    private javax.swing.JComboBox<Veterinario> cboVeterinario;
     private javax.swing.JCheckBox checkboxTratamiento;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

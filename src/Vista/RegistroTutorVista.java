@@ -3,10 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package Vista;
+
 import Controlador.TutorController;
 import ESTRUCTURAS.NodoDoble;
 import MODELO.RegistroTutor;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
@@ -105,6 +107,7 @@ public class RegistroTutorVista extends javax.swing.JPanel {
         btnMostrar.addActionListener(this::btnMostrarActionPerformed);
 
         btnModificar.setText("Modificar");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -206,7 +209,7 @@ public class RegistroTutorVista extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMostrarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-       if (!controladorDisponible() || !camposObligatoriosCompletos()) {
+        if (!controladorDisponible() || !camposObligatoriosCompletos()) {
             return;
         }
 
@@ -225,7 +228,7 @@ public class RegistroTutorVista extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-       if (!controladorDisponible() || texto(txtDni).isEmpty()) {
+        if (!controladorDisponible() || texto(txtDni).isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese el DNI del tutor.");
             return;
         }
@@ -260,8 +263,16 @@ public class RegistroTutorVista extends javax.swing.JPanel {
             txtResultado.setText("No se encontro un tutor con ese DNI.");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
-    
-     private String describirTutor(RegistroTutor tutor) {
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        if(tutorController.buscarTutorPorDni(texto(txtDni)) != null){
+            txtResultado.setText("No se encontro un tutor con ese DNI.");
+        }else{
+            tutorController.modificarTutor(texto(txtDni), texto(txtNombre),texto(txtApellidoMaterno), texto(txtApellidoPaterno), texto(txtTelefono));
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private String describirTutor(RegistroTutor tutor) {
         return "DNI: " + tutor.getDni() + "\nNombre: " + tutor.getNombre()
                 + " " + tutor.getApellidoPaterno() + " "
                 + tutor.getApellidoMaterno() + "\nTelefono: " + tutor.getTelefono();

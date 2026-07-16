@@ -330,7 +330,7 @@ public class RegistroMascotaVista extends javax.swing.JPanel {
     private boolean controladoresDisponibles() {
         if (tutorController == null || mascotaController == null) {
             JOptionPane.showMessageDialog(this,
-                    "La vista debe abrirse desde Dashboard.");
+                    "ingresar datos de un tutor primero en registro tutor");
             return false;
         }
         return true;

@@ -49,10 +49,10 @@ public class dashboard extends javax.swing.JFrame {
 
     // Cargar la vista de inicio por defecto al abrir la aplicación        
     private void mostrarPanel(JPanel vista) {
-        panelPrincipal.removeAll();
-        panelPrincipal.add(vista, java.awt.BorderLayout.CENTER);
-        panelPrincipal.revalidate();
-        panelPrincipal.repaint();
+        panelContenido.removeAll();
+        panelContenido.add(vista, java.awt.BorderLayout.CENTER);
+        panelContenido.revalidate();
+        panelContenido.repaint();
     }
 
     /**
@@ -67,12 +67,14 @@ public class dashboard extends javax.swing.JFrame {
         panelPrincipal = new javax.swing.JPanel();
         panelTitulo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        panelContenido = new javax.swing.JPanel();
         panelMenu = new javax.swing.JPanel();
         btnRegistroTutor = new javax.swing.JButton();
         btnRegistroMascota = new javax.swing.JButton();
         btnRegistroVeterinario = new javax.swing.JButton();
         btnRegistroCitas = new javax.swing.JButton();
         btnHistoriaVeterinaria = new javax.swing.JButton();
+        btnAtencionCitas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,7 +82,7 @@ public class dashboard extends javax.swing.JFrame {
         panelPrincipal.setLayout(new java.awt.BorderLayout());
 
         panelTitulo.setBackground(new java.awt.Color(0, 0, 204));
-        panelTitulo.setPreferredSize(new java.awt.Dimension(672, 100));
+        panelTitulo.setPreferredSize(new java.awt.Dimension(672, 60));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -91,19 +93,22 @@ public class dashboard extends javax.swing.JFrame {
         panelTituloLayout.setHorizontalGroup(
             panelTituloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTituloLayout.createSequentialGroup()
-                .addContainerGap(173, Short.MAX_VALUE)
+                .addContainerGap(155, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(103, 103, 103))
+                .addGap(121, 121, 121))
         );
         panelTituloLayout.setVerticalGroup(
             panelTituloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelTituloLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelPrincipal.add(panelTitulo, java.awt.BorderLayout.PAGE_START);
+
+        panelContenido.setLayout(new java.awt.BorderLayout());
+        panelPrincipal.add(panelContenido, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
 
@@ -126,6 +131,9 @@ public class dashboard extends javax.swing.JFrame {
         btnHistoriaVeterinaria.setText("HISTORIA VETERINARIA");
         btnHistoriaVeterinaria.addActionListener(this::btnHistoriaVeterinariaActionPerformed);
 
+        btnAtencionCitas.setText("ATENCION CITAS");
+        btnAtencionCitas.addActionListener(this::btnAtencionCitasActionPerformed);
+
         javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
         panelMenu.setLayout(panelMenuLayout);
         panelMenuLayout.setHorizontalGroup(
@@ -135,12 +143,12 @@ public class dashboard extends javax.swing.JFrame {
                 .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRegistroTutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelMenuLayout.createSequentialGroup()
-                        .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnRegistroVeterinario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRegistroMascota, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(btnRegistroCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnHistoriaVeterinaria, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnRegistroVeterinario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRegistroMascota, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRegistroCitas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnHistoriaVeterinaria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAtencionCitas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -153,11 +161,13 @@ public class dashboard extends javax.swing.JFrame {
                 .addComponent(btnRegistroMascota)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnRegistroVeterinario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAtencionCitas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRegistroCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnHistoriaVeterinaria)
-                .addContainerGap(373, Short.MAX_VALUE))
+                .addContainerGap(350, Short.MAX_VALUE))
         );
 
         getContentPane().add(panelMenu, java.awt.BorderLayout.WEST);
@@ -174,7 +184,7 @@ public class dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistroMascotaActionPerformed
 
     private void btnHistoriaVeterinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoriaVeterinariaActionPerformed
-        // TODO add your handling code here:
+        mostrarPanel(new HistoriaVista(historialController, mascotaController));
     }//GEN-LAST:event_btnHistoriaVeterinariaActionPerformed
 
     private void btnRegistroVeterinarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroVeterinarioActionPerformed
@@ -182,8 +192,12 @@ public class dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistroVeterinarioActionPerformed
 
     private void btnRegistroCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroCitasActionPerformed
-        // TODO add your handling code here:
+        mostrarPanel(new CitasVista(tutorController, mascotaController, veterinarioController, servicioController, citaController));
     }//GEN-LAST:event_btnRegistroCitasActionPerformed
+
+    private void btnAtencionCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtencionCitasActionPerformed
+        mostrarPanel(new AtencionVista(citaController));
+    }//GEN-LAST:event_btnAtencionCitasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,12 +225,14 @@ public class dashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtencionCitas;
     private javax.swing.JButton btnHistoriaVeterinaria;
     private javax.swing.JButton btnRegistroCitas;
     private javax.swing.JButton btnRegistroMascota;
     private javax.swing.JButton btnRegistroTutor;
     private javax.swing.JButton btnRegistroVeterinario;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel panelContenido;
     private javax.swing.JPanel panelMenu;
     private javax.swing.JPanel panelPrincipal;
     private javax.swing.JPanel panelTitulo;

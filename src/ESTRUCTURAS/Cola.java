@@ -10,8 +10,6 @@ import java.util.Queue;
  *
  * @author User
  */
-
-
 public class Cola {
 
     private Queue<Cita> cola;
@@ -41,6 +39,11 @@ public class Cola {
 
     public int tamano() {
         return cola.size();
+    }
+
+    /** Elimina una cita de la cola usando su identificador. */
+    public boolean eliminarPorIdCita(int idCita) {
+        return cola.removeIf(cita -> cita.getIdCita() == idCita);
     }
 
     public Queue<Cita> obtenerCola() {

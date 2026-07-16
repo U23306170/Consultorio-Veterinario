@@ -4,17 +4,47 @@
  */
 package Vista;
 
+import Controlador.CitaController;
+import Controlador.MascotaController;
+import Controlador.ServicioController;
+import Controlador.TutorController;
+import Controlador.VeterinarioController;
+import ESTRUCTURAS.NodoDoble;
+import MODELO.Cita;
+import MODELO.Mascota;
+import MODELO.RegistroTutor;
+import MODELO.Servicio;
+import MODELO.Veterinario;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author User
  */
 public class CitasVista extends javax.swing.JPanel {
 
+    private TutorController tutorController;
+    private MascotaController mascotaController;
+    private VeterinarioController veterinarioController;
+    private ServicioController servicioController;
+    private CitaController citaController;
+
     /**
      * Creates new form RegistroMascota
      */
     public CitasVista() {
         initComponents();
+    }
+
+    public CitasVista(TutorController tutorController, MascotaController mascotaController, VeterinarioController veterinarioController, ServicioController servicioController, CitaController citaController) {
+        this();
+        this.tutorController = tutorController;
+        this.mascotaController = mascotaController;
+        this.veterinarioController = veterinarioController;
+        this.servicioController = servicioController;
+        this.citaController = citaController;
+        cargarVeterinariosYServicios();
     }
 
     /**
@@ -103,23 +133,22 @@ public class CitasVista extends javax.swing.JPanel {
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(this::btnEliminarActionPerformed);
 
         btnMostrar.setText("MOSTRAR");
+        btnMostrar.addActionListener(this::btnMostrarActionPerformed);
 
         btnModificar.setText("MODIFICAR");
+        btnModificar.addActionListener(this::btnModificarActionPerformed);
 
         jLabel5.setText("Fecha:");
 
         jLabel6.setText("Hora:");
 
-        cboMascota.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboMascota.addActionListener(this::cboMascotaActionPerformed);
 
         jLabel4.setText("Asignar Veterinario:");
 
-        cboVeterinario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        cboServicio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboServicio.addActionListener(this::cboServicioActionPerformed);
 
         jLabel9.setText("Asignar Servicio:");
@@ -132,7 +161,7 @@ public class CitasVista extends javax.swing.JPanel {
 
         jLabel10.setText("Metodo de pago");
 
-        cboEstadoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendiente", "Pagada", "Anulada" }));
+        cboEstadoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendiente", "Pagado", "Anulada" }));
 
         cboMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Yape", "Plin", "Tarjeta" }));
 
@@ -274,21 +303,131 @@ public class CitasVista extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        RegistroTutor tutor = cargarTutorYMasctas();
+        if (tutor == null || !datosCompletos()) {
+            return;
+        }
+        Cita cita = citaController.registrarNuevaCita(tutor,
+                (Mascota) cboMascota.getSelectedItem(), (Veterinario) cboVeterinario.getSelectedItem(),
+                (Servicio) cboServicio.getSelectedItem(), jdcFecha.getDate(), txtHora.getText(), txtMotivo.getText(),
+                cboEstadoPago.getSelectedItem().toString(), cboMetodoPago.getSelectedItem().toString());
+        if (cita == null)
+            JOptionPane.showMessageDialog(this, "No se pudo registrar la cita.");
+        else
+            txtResultado.setText("Cita registrada y encolada. ID: " + cita.getIdCita());
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
+        RegistroTutor tutor = cargarTutorYMasctas();
+        if (tutor != null)
+            txtResultado.setText("Tutor encontrado: " + tutor.getNombre() + "\nSeleccione una mascota.");
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void cboMascotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMascotaActionPerformed
-        cboMascota.addItem(mascota);
+
     }//GEN-LAST:event_cboMascotaActionPerformed
 
     private void cboServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboServicioActionPerformed
-        Servicio[] servicios = servicioController.obtenerServicios();
+        
     }//GEN-LAST:event_cboServicioActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        Integer id = solicitarId("ID de cita a eliminar:");
+        if (id != null)
+            txtResultado.setText(citaController.eliminarCita(id)
+                    ? "Cita eliminada del registro y de la cola." : "No existe la cita.");
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        Integer id = solicitarId("ID de cita a modificar:");
+        if (id == null || !datosCompletos()) return;
+        Cita cita = citaController.buscarCitaPorId(id);
+        if (cita == null) { txtResultado.setText("No existe la cita."); return; }
+        boolean ok = citaController.modificarCita(id, (Veterinario) cboVeterinario.getSelectedItem(),
+                (Servicio) cboServicio.getSelectedItem(), cita.getPago(), jdcFecha.getDate(), txtHora.getText(), txtMotivo.getText());
+        txtResultado.setText(ok ? "Cita modificada." : "No se pudo modificar la cita.");
+    }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
+        StringBuilder salida = new StringBuilder("CITAS\n\n");
+        NodoDoble<Cita> actual = citaController.getCitas().getPrimero();
+        while (actual != null) { Cita c=actual.getDato(); salida.append("ID: ").append(c.getIdCita()).append(" | ").append(c.getMascota().getNombre()).append(" | ").append(c.getEstado()).append("\n"); actual=actual.getSiguiente(); }
+        txtResultado.setText(salida.toString());
+    }//GEN-LAST:event_btnMostrarActionPerformed
+
+    private void cargarVeterinariosYServicios() {
+        DefaultComboBoxModel<Veterinario> vets = new DefaultComboBoxModel<>();
+        NodoDoble<Veterinario> actual = veterinarioController.getVeterinarios().getPrimero();
+        while (actual != null) {
+            vets.addElement(actual.getDato());
+            actual = actual.getSiguiente();
+        }
+        cboVeterinario.setModel(vets);
+        cboVeterinario.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> l, Object v, int i, boolean s, boolean f) {
+                super.getListCellRendererComponent(l, v == null ? "Seleccione" : ((Veterinario) v).getIdVeterinario() + " - " + ((Veterinario) v).getNombre(), i, s, f);
+                return this;
+            }
+        });
+        DefaultComboBoxModel<Servicio> servicios = new DefaultComboBoxModel<>();
+        for (Servicio servicio : servicioController.obtenerServicios()) {
+            servicios.addElement(servicio);
+        }
+        cboServicio.setModel(servicios);
+        cboServicio.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> l, Object v, int i, boolean s, boolean f) {
+                super.getListCellRendererComponent(l, v == null ? "Seleccione" : ((Servicio) v).getNombre() + " - S/ " + ((Servicio) v).getCosto(), i, s, f);
+                return this;
+            }
+        });
+    }
+
+    private RegistroTutor cargarTutorYMasctas() {
+        if (txtDni.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese DNI del tutor.");
+            return null;
+        }
+        RegistroTutor tutor = tutorController.buscarTutorPorDni(txtDni.getText().trim());
+        if (tutor == null) {
+            JOptionPane.showMessageDialog(this, "Tutor no encontrado.");
+            return null;
+        }
+        DefaultComboBoxModel<Mascota> mascotas = new DefaultComboBoxModel<>();
+        NodoDoble<Mascota> actual = mascotaController.getMascotas().getPrimero();
+        while (actual != null) {
+            Mascota m = actual.getDato();
+            if (m.getTutor().getDni().equals(tutor.getDni())) {
+                mascotas.addElement(m);
+            }
+            actual = actual.getSiguiente();
+        }
+        cboMascota.setModel(mascotas);
+        cboMascota.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> l, Object v, int i, boolean s, boolean f) {
+                super.getListCellRendererComponent(l, v == null ? "Sin mascotas" : ((Mascota) v).getIdMascota() + " - " + ((Mascota) v).getNombre(), i, s, f);
+                return this;
+            }
+        });
+        return tutor;
+    }
+
+    private boolean datosCompletos() {
+        if (cboMascota.getSelectedItem() == null || cboVeterinario.getSelectedItem() == null || cboServicio.getSelectedItem() == null || jdcFecha.getDate() == null || txtHora.getText().trim().isEmpty() || txtMotivo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Complete los datos de la cita.");
+            return false;
+        }
+        return true;
+    }
+
+    private Integer solicitarId(String mensaje) {
+        String s = JOptionPane.showInputDialog(this, mensaje);
+        try {
+            return s == null ? null : Integer.valueOf(s.trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID invalido.");
+            return null;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
@@ -297,10 +436,10 @@ public class CitasVista extends javax.swing.JPanel {
     private javax.swing.JButton btnMostrar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cboEstadoPago;
-    private javax.swing.JComboBox<String> cboMascota;
+    private javax.swing.JComboBox<Mascota> cboMascota;
     private javax.swing.JComboBox<String> cboMetodoPago;
-    private javax.swing.JComboBox<String> cboServicio;
-    private javax.swing.JComboBox<String> cboVeterinario;
+    private javax.swing.JComboBox<Servicio> cboServicio;
+    private javax.swing.JComboBox<Veterinario> cboVeterinario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
