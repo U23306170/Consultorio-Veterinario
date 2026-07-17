@@ -18,10 +18,7 @@ public class HistorialController {
         historiales = new ListaSimple<>();
     }
 
-    /**
-     * Agrega una nueva atencion al final del historial clinico.
-     * Los historiales no se modifican ni eliminan despues de registrarse.
-     */
+    /*Agrega una nueva atencion al final del historial clinico. Los historiales no se modifican ni eliminan despues de registrarse.*/
     public boolean registrarHistorial(HistorialClinicoVeterinario historial) {
         if (historial == null
                 || buscarHistorialPorId(historial.getIdHistorial()) != null) {

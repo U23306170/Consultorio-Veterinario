@@ -22,10 +22,8 @@ public class VeterinarioController {
         proximoIdVeterinario = 1;
     }
 
-    /*Registra un veterinario cuando su id no existe en la lista(evita redundancia de datos)*/
-    /**
-     * Registra un veterinario cuando su identificador no existe en la lista.
-     *
+    /*Registra un veterinario cuando su id no existe en la lista(se hace as paaraevita redundancia de datos)
+     Registra un veterinario cuando su identificador no existe en la lista.
      * @param veterinario
      * @return
      */

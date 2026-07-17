@@ -35,10 +35,7 @@ public class CitaController {
         this.historialController = historialController;
     }
 
-    /**
-     * Registra una cita y conserva en su pago el costo vigente del servicio que
-     * se ingresara en el JcomboBox de la vista.
-     */
+    /*Registra una cita y conserva en su pago el costo vigente del servicio que se ingresara en el JcomboBox de la vista.*/
     public boolean registrarCita(Cita cita) {
         if (cita == null || cita.getTutor() == null || cita.getMascota() == null
                 || cita.getVeterinario() == null || cita.getServicio() == null
@@ -53,9 +50,7 @@ public class CitaController {
         return true;
     }
 
-    /**
-     * Crea, registra y encola una cita con IDs internos automaticos.
-     */
+    /*Crea, registra y encola una cita con IDs internos automaticos*/
     public Cita registrarNuevaCita(RegistroTutor tutor, Mascota mascota,
             Veterinario veterinario, Servicio servicio, Date fecha, String hora,
             String motivo, String estadoPago, String metodoPago) {
@@ -120,7 +115,7 @@ public class CitaController {
         return true;
     }
 
-    /*encolar cooloca una cita registrada al final de la cola de atencion. */
+    /*encolar coolocar una cita registrada al final de la cola de atencion para simular una atencion n el consultorio. */
     public boolean encolarCita(int idCita) {
         Cita cita = buscarCitaPorId(idCita);
         if (cita == null || "ATENDIDA".equals(cita.getEstado())
@@ -166,9 +161,7 @@ public class CitaController {
                 diagnostico, observaciones, tratamiento);
     }
 
-    /**
-     * Elimina la cita del registro y, si existe, de la cola de atencion.
-     */
+    /* Elimina la cita del registro y, si existe, de la cola de atencion*/
     public boolean eliminarCita(int idCita) {
         Cita cita = buscarCitaPorId(idCita);
         if (cita == null) {

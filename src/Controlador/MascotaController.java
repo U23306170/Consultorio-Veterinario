@@ -33,9 +33,7 @@ public class MascotaController {
         return true;
     }
 
-    /**
-     * Crea y registra una mascota con un identificador generado por el sistema.
-     */
+    /* Crea y registra una mascota con un identificador generado por el sistema.*/
     public Mascota registrarMascota(RegistroTutor tutor, String nombre,
             String especie, String edad) {
         if (tutor == null || esTextoVacio(nombre) || esTextoVacio(especie)
