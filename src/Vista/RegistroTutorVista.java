@@ -265,10 +265,19 @@ public class RegistroTutorVista extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        if(tutorController.buscarTutorPorDni(texto(txtDni)) != null){
-            txtResultado.setText("No se encontro un tutor con ese DNI.");
-        }else{
-            tutorController.modificarTutor(texto(txtDni), texto(txtNombre),texto(txtApellidoMaterno), texto(txtApellidoPaterno), texto(txtTelefono));
+        boolean modificado = tutorController.modificarTutor(
+                texto(txtDni),
+                texto(txtNombre),
+                texto(txtApellidoPaterno),
+                texto(txtApellidoMaterno),
+                texto(txtTelefono)
+        );
+
+        if (modificado) {
+            txtResultado.setText("Tutor modificado correctamente.");
+            limpiarCampos();
+        } else {
+            txtResultado.setText("No se encontró un tutor con ese DNI.");
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 

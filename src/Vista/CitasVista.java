@@ -86,6 +86,7 @@ public class CitasVista extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         cboEstadoPago = new javax.swing.JComboBox<>();
         cboMetodoPago = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(51, 0, 204));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -165,6 +166,8 @@ public class CitasVista extends javax.swing.JPanel {
 
         cboMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Yape", "Plin", "Tarjeta" }));
 
+        jButton1.setText("LIMPIAR");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -175,7 +178,9 @@ public class CitasVista extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnMostrar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnModificar))
+                        .addComponent(btnModificar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,7 +287,8 @@ public class CitasVista extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnModificar)
-                            .addComponent(btnMostrar))
+                            .addComponent(btnMostrar)
+                            .addComponent(jButton1))
                         .addContainerGap(16, Short.MAX_VALUE))))
         );
 
@@ -440,6 +446,7 @@ public class CitasVista extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cboMetodoPago;
     private javax.swing.JComboBox<Servicio> cboServicio;
     private javax.swing.JComboBox<Veterinario> cboVeterinario;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;

@@ -100,9 +100,85 @@ public class MascotaController {
         return true;
     }
 
+    public String listarMascotas() {
+
+        StringBuilder sb = new StringBuilder();
+
+        NodoDoble<Mascota> actual = mascotas.getPrimero();
+
+        while (actual != null) {
+
+            Mascota m = actual.getDato();
+
+            sb.append("ID: ")
+                    .append(m.getIdMascota())
+                    .append("\nTutor: ")
+                    .append(m.getTutor().getNombre())
+                    .append(" ")
+                    .append(m.getTutor().getApellidoPaterno())
+                    .append("\nNombre: ")
+                    .append(m.getNombre())
+                    .append("\nEspecie: ")
+                    .append(m.getEspecie())
+                    .append("\nEdad: ")
+                    .append(m.getEdad())
+                    .append("\n---------------------------\n");
+
+            actual = actual.getSiguiente();
+        }
+        if (sb.length() == 0) {
+            return "No existen mascotas registradas.";
+        }
+        return sb.toString();
+    }
+
+    public String listarMascotasDelTutor(RegistroTutor tutor) {
+
+        if (tutor == null) {
+            return "Tutor no encontrado.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        NodoDoble<Mascota> actual = mascotas.getPrimero();
+
+        while (actual != null) {
+
+            Mascota mascota = actual.getDato();
+
+            if (mascota.getTutor() != null
+                    && tutor.getDni().equals(mascota.getTutor().getDni())) {
+
+                sb.append(describirMascota(mascota))
+                        .append("\n\n");
+            }
+
+            actual = actual.getSiguiente();
+        }
+
+        if (sb.length() == 0) {
+            return "No hay mascotas registradas para este tutor.";
+        }
+
+        return sb.toString();
+    }
+
+    public String describirMascota(Mascota mascota) {
+
+        if (mascota == null) {
+            return "Mascota no encontrada.";
+        }
+
+        return "ID: " + mascota.getIdMascota()
+                + "\nNombre: " + mascota.getNombre()
+                + "\nEspecie: " + mascota.getEspecie()
+                + "\nEdad: " + mascota.getEdad();
+    }
+
     public ListaDoble<Mascota> getMascotas() {
         return mascotas;
     }
+
     /* Elimina una mascota identificada por su codigo unico.*/
     public boolean eliminarMascota(int idMascota) {
         Mascota mascota = buscarMascotaPorId(idMascota);
